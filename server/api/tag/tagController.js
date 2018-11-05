@@ -3,7 +3,7 @@ var _ = require('lodash');
 var logger = require('../../util/logger');
 
 exports.params = function(req, res, next, TagId) {
-  Tag.findById(TagId)
+    Tag.find({"TagId":TagId}).limit(1)
     .exec()
     .then(function(Tag) {
       if (!Tag) {
@@ -18,7 +18,25 @@ exports.params = function(req, res, next, TagId) {
 };
 
 exports.get = function(req, res, next) {
-  Tag.find({})
+    // This query returns the most complete list
+    Tag.aggregate([
+        {$group: {_id:"$TagId",ItemId: {$first: "$ItemId"},
+        Cycle: {$first: "$Cycle"},Group: {$first: "$Group"}}}])
+    //Tag.find({})
+    .exec()
+    .then(function(Tags){
+      res.json(Tags);
+    }, function(err){
+      next(err);
+    });
+};
+
+exports.getLastGroup = function(req, res, next) {
+    // This query returns the most complete list
+    Tag.aggregate([
+        {$group: {_id:"$TagId",ItemId: {$first: "$ItemId"},
+        Cycle: {$first: "$Cycle"},Group: {$first: "$Group"}}}])
+    //Tag.find({})
     .exec()
     .then(function(Tags){
       res.json(Tags);
@@ -28,8 +46,7 @@ exports.get = function(req, res, next) {
 };
 
 exports.getOne = function(req, res, next) {
-  var Tag = req.Tag;
-  res.json(Tag);
+      res.json(req.Tag[0]);
 };
 
 exports.put = function(req, res, next) {
