@@ -3,7 +3,7 @@ var expressJwt = require('express-jwt');
 var config = require('../config/config');
 var checkToken = expressJwt({ secret: config.secrets.jwt });
 var User = require('../api/user/userModel');
-
+//passport
 exports.decodeToken = function() {
   return function(req, res, next) {
     // make it optional to place token on query string
