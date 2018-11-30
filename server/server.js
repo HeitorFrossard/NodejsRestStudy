@@ -3,10 +3,13 @@ var app = express();
 var api = require('./api/api');
 var config = require('./config/config');
 var logger = require('./util/logger');
+var auth = require('./auth/routes');
+
 require('mongoose').connect(config.db.url);
 require('./middleware/appMiddleware')(app);
 
 app.use('/api', api);
+app.use('/auth', auth);
 
 app.use(function(err, req, res, next) {
   // if error thrown from jwt validation check

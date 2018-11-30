@@ -1,4 +1,7 @@
 module.exports = {
     // disbable logging for production
-    logging: false
+    logging: false;
+    db: {
+      url: 'mongodb://localhost/greendot_production'
+    }
   };
